@@ -22,6 +22,7 @@ import com.example.demo.dto.TokenRefreshResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demo.Entity.User;
+import com.example.demo.Entity.refreshToken;
 import com.example.demo.Repository.UserRepository;
 
 @RestController
@@ -52,11 +53,13 @@ public class AuthControllers {
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        // 2. Nếu xác thực thành công, tạo Token và trả về cho Client
-        String token = jwtService.GeneratedToken(request.getUsername());
+        // 2. Nếu xác thực thành công, tạo Access Token và Refresh Token cho Client
+        String accessToken = jwtService.GeneratedToken(request.getUsername());
+        refreshToken refreshToken = refreshTokenService.createRefreshToken(request.getUsername());
 
         Map<String, String> response = new HashMap<>();
-        response.put("token", token);
+        response.put("accessToken", accessToken);
+        response.put("refreshToken", refreshToken.getToken());
 
         return ResponseEntity.ok(response);
     }
