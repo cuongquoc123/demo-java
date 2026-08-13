@@ -2,13 +2,18 @@ package com.example.demo.dto;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ErrorRespone {
     private String message;
     private int status;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;
     private String error;
     private String path;
+
+    public ErrorRespone() {
+    }
 
     public ErrorRespone(String message, int status, LocalDateTime timestamp, String error, String path) {
         this.message = message;

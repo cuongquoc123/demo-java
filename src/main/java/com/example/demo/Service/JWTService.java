@@ -11,8 +11,6 @@ import javax.crypto.SecretKey;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.Entity.Student;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -38,17 +36,17 @@ public class JWTService {
     }
 
     public String ExtractUsername(String Token) {
-        return extractClaim(Token, Claims::getSubject);
+        return extractClaim(Token, claims -> claims.getSubject());
     }
 
-    public boolean IsValidToken(String Token, UserDetails StudentDetail) {
+    public boolean IsValidToken(String Token, UserDetails userDetails) {
         String username = ExtractUsername(Token);
-        return (username.equals(StudentDetail.getUsername()) && !isTokenExpired(Token));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(Token));
     }
 
 
     private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+        return extractClaim(token, claims -> claims.getExpiration()).before(new Date());
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
